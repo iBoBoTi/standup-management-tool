@@ -24,7 +24,7 @@ type authService struct {
 	employeeRepository repository.EmployeeRepository
 }
 
-func NewUserService(tokenMaker security.Maker, employeeRepository repository.EmployeeRepository) *authService {
+func NewAuthService(tokenMaker security.Maker, employeeRepository repository.EmployeeRepository) *authService {
 	return &authService{
 		tokenMaker:         tokenMaker,
 		employeeRepository: employeeRepository,

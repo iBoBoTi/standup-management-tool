@@ -17,7 +17,7 @@ type employeeRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) *employeeRepository {
+func NewEmployeeRepository(db *gorm.DB) *employeeRepository {
 	return &employeeRepository{
 		db: db,
 	}

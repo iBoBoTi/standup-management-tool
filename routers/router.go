@@ -32,7 +32,7 @@ func SetupRouter(srv *server.Server) {
 
 	v1.GET("/health-check", handlers.NewHealthController(srv).HealthCheck)
 
-	authHandler := handlers.NewAuthHandler(srv, service.NewUserService(srv.TokenMaker, repository.NewUserRepository(srv.DB.GormDB)))
+	authHandler := handlers.NewAuthHandler(srv, service.NewAuthService(srv.TokenMaker, repository.NewEmployeeRepository(srv.DB.GormDB)))
 	v1.POST("/signup", authHandler.SignUp)
 	v1.POST("/employee/login", authHandler.Login)
 
