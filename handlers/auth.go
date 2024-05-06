@@ -29,7 +29,7 @@ func NewAuthHandler(srv *server.Server, authService service.AuthService) *authHa
 	}
 }
 
-func (a *authHandler) SignUp(ctx *gin.Context) {
+func (ah *authHandler) SignUp(ctx *gin.Context) {
 	var employeeRequest dtos.Employee
 
 	if err := ctx.ShouldBindJSON(&employeeRequest); err != nil {
@@ -39,7 +39,7 @@ func (a *authHandler) SignUp(ctx *gin.Context) {
 
 	employeeRequest.Role = dtos.AdminRole
 
-	createdEmployee, err := a.authService.CreateEmployee(&employeeRequest)
+	createdEmployee, err := ah.authService.CreateEmployee(&employeeRequest)
 	if err != nil {
 		var e *validator.ValidationError
 		switch {
@@ -54,7 +54,7 @@ func (a *authHandler) SignUp(ctx *gin.Context) {
 	server.SuccessJSONResponse(ctx, http.StatusCreated, "employee signup successfully", createdEmployee)
 }
 
-func (a *authHandler) Login(ctx *gin.Context) {
+func (ah *authHandler) Login(ctx *gin.Context) {
 	var loginRequest dtos.LoginRequest
 
 	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
@@ -62,14 +62,14 @@ func (a *authHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	res, err := a.authService.Login(&loginRequest)
+	res, err := ah.authService.Login(&loginRequest)
 	if err != nil {
 		var e *validator.ValidationError
 		switch {
 		case errors.As(err, &e):
 			server.SendValidationError(ctx, e)
 		default:
-			a.srv.Logger.Error(err, nil)
+			ah.srv.Logger.Error(err, nil)
 			server.ErrorJSONResponse(ctx, appError.ErrStatusCode(err), appError.ErrInternalServer)
 		}
 		return

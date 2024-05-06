@@ -34,9 +34,11 @@ func SetupRouter(srv *server.Server) {
 
 	authHandler := handlers.NewAuthHandler(srv, service.NewAuthService(srv.TokenMaker, repository.NewEmployeeRepository(srv.DB.GormDB)))
 	v1.POST("/signup", authHandler.SignUp)
-	v1.POST("/employee/login", authHandler.Login)
+	v1.POST("/login", authHandler.Login)
 
 	v1.Use(srv.ApplyAuthentication())
+	employeeHandler := handlers.NewEmployeeHandler(srv, service.NewEmployeeService(repository.NewEmployeeRepository(srv.DB.GormDB)))
+	v1.POST("/employees", employeeHandler.AdminCreateEmployee)
 
 	srv.Router = router
 
