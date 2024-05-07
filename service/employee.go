@@ -4,9 +4,9 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"github.com/iBoBoTi/standup-management-tool/internal/dtos"
-	"github.com/iBoBoTi/standup-management-tool/repository"
 	"github.com/iBoBoTi/standup-management-tool/internal/mappers"
 	"github.com/iBoBoTi/standup-management-tool/internal/validator"
+	"github.com/iBoBoTi/standup-management-tool/repository"
 )
 
 const (
@@ -27,7 +27,7 @@ func NewEmployeeService(employeeRepository repository.EmployeeRepository) *emplo
 	}
 }
 
-func (es * employeeService) AdminCreateEmployee(employeeDto *dtos.AdminCreateEmployeeDto) (*dtos.AdminCreateEmployeeDto, error){
+func (es *employeeService) AdminCreateEmployee(employeeDto *dtos.AdminCreateEmployeeDto) (*dtos.AdminCreateEmployeeDto, error) {
 
 	v := validator.NewValidator()
 
@@ -41,8 +41,7 @@ func (es * employeeService) AdminCreateEmployee(employeeDto *dtos.AdminCreateEmp
 		return nil, validator.NewValidationError("validation failed", v.Errors)
 	}
 
-
-	employeeDto.Password =  generateRandomPassword(passwordLength)
+	employeeDto.Password = generateRandomPassword(passwordLength)
 
 	if err := employeeDto.HashPassword(); err != nil {
 		return nil, err
@@ -64,7 +63,7 @@ func generateRandomPassword(length int) string {
 	b := make([]byte, length)
 	_, err := rand.Read(b)
 	if err != nil {
-	   panic(err)
+		panic(err)
 	}
 	return base64.StdEncoding.EncodeToString(b)
- }
+}

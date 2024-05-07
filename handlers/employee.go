@@ -16,21 +16,21 @@ type EmployeeHandler interface {
 }
 
 type employeeHandler struct {
-	srv         *server.Server
+	srv             *server.Server
 	employeeService service.EmployeeService
 }
 
 func NewEmployeeHandler(srv *server.Server, employeeService service.EmployeeService) *employeeHandler {
 	return &employeeHandler{
-		srv:         srv,
+		srv:             srv,
 		employeeService: employeeService,
 	}
 }
 
-func (eh *employeeHandler) AdminCreateEmployee(ctx *gin.Context){
+func (eh *employeeHandler) AdminCreateEmployee(ctx *gin.Context) {
 
 	admin := eh.srv.ContextGetUser(ctx)
-	
+
 	var employeeRequest dtos.AdminCreateEmployeeDto
 
 	if err := ctx.ShouldBindJSON(&employeeRequest); err != nil {

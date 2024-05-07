@@ -37,21 +37,21 @@ type Employee struct {
 	UpdatedAt       time.Time `json:"updated_at"`
 }
 
-func (u *Employee) Validate(v *validator.Validator) bool {
-	v.Check(u.Email != "", "email", "email must not be blank")
-	v.Check(IsEmail(u.Email), "email", "must be a valid email address")
-	v.Check(len(u.Email) <= 200, "email", "must not be more than 200 bytes long")
+func (e *Employee) Validate(v *validator.Validator) bool {
+	v.Check(e.Email != "", "email", "email must not be blank")
+	v.Check(IsEmail(e.Email), "email", "must be a valid email address")
+	v.Check(len(e.Email) <= 200, "email", "must not be more than 200 bytes long")
 
-	v.Check(u.Password != "", "password", "must not be blank")
-	v.Check(len(u.Password) >= MinPasswordLength, "password", "must be at least 8 characters long")
-	v.Check(len(u.Password) <= MaxPasswordLength, "password", "the password is too long")
-	v.Check(u.Password == u.ConfirmPassword, "password", "password must be the same as confirm password")
+	v.Check(e.Password != "", "password", "must not be blank")
+	v.Check(len(e.Password) >= MinPasswordLength, "password", "must be at least 8 characters long")
+	v.Check(len(e.Password) <= MaxPasswordLength, "password", "the password is too long")
+	v.Check(e.Password == e.ConfirmPassword, "password", "password must be the same as confirm password")
 
-	v.Check(u.FirstName != "", "first_name", "must not be blank")
-	v.Check(len(u.FirstName) <= 255, "first_name", "must not be more than 50 bytes long")
+	v.Check(e.FirstName != "", "first_name", "must not be blank")
+	v.Check(len(e.FirstName) <= 255, "first_name", "must not be more than 50 bytes long")
 
-	v.Check(u.LastName != "", "last_name", "must not be blank")
-	v.Check(len(u.LastName) <= 255, "last_name", "must not be more than 50 bytes long")
+	v.Check(e.LastName != "", "last_name", "must not be blank")
+	v.Check(len(e.LastName) <= 255, "last_name", "must not be more than 50 bytes long")
 	return v.Valid()
 }
 
@@ -65,16 +65,16 @@ func (e *Employee) HashPassword() error {
 }
 
 type AdminCreateEmployeeDto struct {
-	ID              uuid.UUID `json:"id"`
-	FirstName       string    `json:"first_name" binding:"required"`
-	LastName        string    `json:"last_name" binding:"required"`
-	Email           string    `json:"email" binding:"required"`
-	Company         string    `json:"company"`
-	Role            string    `json:"role"`
-	Password string `json:"password"`
-	PasswordHash string `json:"-"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
+	ID           uuid.UUID `json:"id"`
+	FirstName    string    `json:"first_name" binding:"required"`
+	LastName     string    `json:"last_name" binding:"required"`
+	Email        string    `json:"email" binding:"required"`
+	Company      string    `json:"company"`
+	Role         string    `json:"role"`
+	Password     string    `json:"password"`
+	PasswordHash string    `json:"-"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 func (a *AdminCreateEmployeeDto) HashPassword() error {
@@ -86,16 +86,16 @@ func (a *AdminCreateEmployeeDto) HashPassword() error {
 	return nil
 }
 
-func (u *AdminCreateEmployeeDto) Validate(v *validator.Validator) bool {
-	v.Check(u.Email != "", "email", "email must not be blank")
-	v.Check(IsEmail(u.Email), "email", "must be a valid email address")
-	v.Check(len(u.Email) <= 200, "email", "must not be more than 200 bytes long")
+func (a *AdminCreateEmployeeDto) Validate(v *validator.Validator) bool {
+	v.Check(a.Email != "", "email", "email must not be blank")
+	v.Check(IsEmail(a.Email), "email", "must be a valid email address")
+	v.Check(len(a.Email) <= 200, "email", "must not be more than 200 bytes long")
 
-	v.Check(u.FirstName != "", "first_name", "must not be blank")
-	v.Check(len(u.FirstName) <= 255, "first_name", "must not be more than 50 bytes long")
+	v.Check(a.FirstName != "", "first_name", "must not be blank")
+	v.Check(len(a.FirstName) <= 255, "first_name", "must not be more than 50 bytes long")
 
-	v.Check(u.LastName != "", "last_name", "must not be blank")
-	v.Check(len(u.LastName) <= 255, "last_name", "must not be more than 50 bytes long")
+	v.Check(a.LastName != "", "last_name", "must not be blank")
+	v.Check(len(a.LastName) <= 255, "last_name", "must not be more than 50 bytes long")
 	return v.Valid()
 }
 
@@ -108,7 +108,7 @@ func IsEmail(value string) bool {
 	return EmailRgx.MatchString(value)
 }
 
-func hashPassword(password string) (string ,error){
+func hashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", fmt.Errorf("error hashing password %v", err)

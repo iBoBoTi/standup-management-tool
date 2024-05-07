@@ -11,7 +11,7 @@ func EmployeeDtoMapToEmployeeModel(employeeDto *dtos.Employee) *models.Employee 
 		LastName:     employeeDto.LastName,
 		Email:        employeeDto.Email,
 		PasswordHash: employeeDto.Password,
-		Company: employeeDto.Company,
+		Company:      employeeDto.Company,
 		Role:         employeeDto.Role,
 	}
 }
@@ -34,7 +34,7 @@ func AdminCreateEmployeeDtoMapToEmployeeModel(employeeDto *dtos.AdminCreateEmplo
 		FirstName:    employeeDto.FirstName,
 		LastName:     employeeDto.LastName,
 		Email:        employeeDto.Email,
-		Company: employeeDto.Company,
+		Company:      employeeDto.Company,
 		PasswordHash: employeeDto.PasswordHash,
 		Role:         employeeDto.Role,
 	}
