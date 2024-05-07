@@ -40,6 +40,13 @@ func SetupRouter(srv *server.Server) {
 	employeeHandler := handlers.NewEmployeeHandler(srv, service.NewEmployeeService(repository.NewEmployeeRepository(srv.DB.GormDB)))
 	v1.POST("/employees", employeeHandler.AdminCreateEmployee)
 
+	sprintHandler := handlers.NewSprintHandler(srv, service.NewSprintService(repository.NewSprintRepository(srv.DB.GormDB)))
+	v1.POST("/sprints", sprintHandler.CreateSprint)
+	v1.GET("/sprints", sprintHandler.GetAllSprints)
+
+	standupHandler := handlers.NewStandupUpdateHandler(srv, service.NewStandupUpdateService(repository.NewStandupUpdateRepository(srv.DB.GormDB), repository.NewSprintRepository(srv.DB.GormDB)))
+	v1.POST("/sprints/:id/updates", standupHandler.CreateStandupUpdate)
+
 	srv.Router = router
 
 }

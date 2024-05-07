@@ -1,6 +1,9 @@
 package service
 
 import (
+	"log"
+	"time"
+
 	"github.com/iBoBoTi/standup-management-tool/internal/dtos"
 	"github.com/iBoBoTi/standup-management-tool/internal/mappers"
 	"github.com/iBoBoTi/standup-management-tool/internal/validator"
@@ -16,7 +19,7 @@ type sprintService struct {
 	sprintRepository repository.SprintRepository
 }
 
-func NewSprintRepository(sprintRepository repository.SprintRepository) *sprintService {
+func NewSprintService(sprintRepository repository.SprintRepository) *sprintService {
 	return &sprintService{
 		sprintRepository: sprintRepository,
 	}
@@ -35,6 +38,9 @@ func (ss *sprintService) CreateSprint(sprintDto *dtos.Sprint) (*dtos.Sprint, err
 	if !sprintDto.Validate(v) {
 		return nil, validator.NewValidationError("validation failed", v.Errors)
 	}
+
+	sprintDto.EndDateTime = sprintDto.StartDateTime.Add(time.Duration(StandUpDuration) * 24 * 7 * time.Hour)
+	log.Println("end time", sprintDto.EndDateTime)
 
 	sprintModel := mappers.SprintDtoMapToSprintModel(sprintDto)
 

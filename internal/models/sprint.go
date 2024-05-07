@@ -15,5 +15,5 @@ type Sprint struct {
 	Duration             int64           `gorm:"not null"` // in weeks
 	CreatorID            uuid.UUID       `gorm:"not null"`
 	DailyUpdateStartTime string          `gorm:"not null"`
-	StandupUpdate        []StandupUpdate `gorm:"constraint:OnDelete:CASCADE"`
+	StandupUpdates       []StandupUpdate `gorm:"foreignKey:SprintID;constraint:OnDelete:CASCADE"`
 }

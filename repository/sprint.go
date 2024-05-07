@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/google/uuid"
 	"github.com/iBoBoTi/standup-management-tool/internal/models"
 	"gorm.io/gorm"
 )
@@ -9,6 +10,8 @@ type SprintRepository interface {
 	CreateSprint(sprint *models.Sprint) error
 	GetAllSprints(limit, page int) ([]models.Sprint, error)
 	SprintProjectNameExist(name string) (bool, error)
+	SprintExist(id uuid.UUID) (bool, error)
+	GetSprintByID(id uuid.UUID) (*models.Sprint, error)
 }
 
 type sprintRepository struct {
@@ -40,4 +43,21 @@ func (sr *sprintRepository) SprintProjectNameExist(name string) (bool, error) {
 		return true, tx.Error
 	}
 	return false, tx.Error
+}
+
+func (sr *sprintRepository) SprintExist(id uuid.UUID) (bool, error) {
+	var num int
+	tx := sr.db.Raw("SELECT CASE WHEN EXISTS (SELECT * FROM sprints WHERE id = ?) THEN CAST(1 AS BIT)ELSE CAST(0 AS BIT) END", id).Scan(&num)
+	if num == 1 {
+		return true, tx.Error
+	}
+	return false, tx.Error
+}
+
+func (sr *sprintRepository) GetSprintByID(id uuid.UUID) (*models.Sprint, error) {
+	sprint := &models.Sprint{}
+	if err := sr.db.Model(&models.Sprint{}).Where("id", id).First(sprint).Error; err != nil {
+		return nil, err
+	}
+	return sprint, nil
 }

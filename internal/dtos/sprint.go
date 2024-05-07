@@ -14,7 +14,7 @@ type Sprint struct {
 	StartDateTime        time.Time `json:"start_date_time" binding:"required"`
 	EndDateTime          time.Time `json:"end_date_time"`
 	Duration             int64     `json:"duration" binding:"required"` // in weeks
-	CreatorID            uuid.UUID `json:"creator_id" binding:"required"`
+	CreatorID            uuid.UUID `json:"creator_id"`
 	DailyUpdateStartTime string    `json:"daily_update_start_time" binding:"required"` //time only
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
@@ -29,6 +29,9 @@ func (s *Sprint) Validate(v *validator.Validator) bool {
 
 	v.Check(s.Duration > 0, "duration", "should be greater than 0")
 	v.Check(s.DailyUpdateStartTime != "", "daily_update_start_time", "must not be blank")
+
+	_, err := time.Parse(time.Kitchen, s.DailyUpdateStartTime)
+	v.Check(err == nil, "daily_update_start_time", "must of the format example 02:30PM")
 
 	return v.Valid()
 }
