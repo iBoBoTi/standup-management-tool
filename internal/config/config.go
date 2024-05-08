@@ -37,8 +37,9 @@ func loader(p string, env string) (cfg Config, err error) {
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
+	viper.AllowEmptyEnv(true)
 
-	if environment == "production"{
+	if environment == "production" {
 		viper.SetDefault("ENVIRONMENT", environment)
 		viper.SetDefault("DB_HOST", os.Getenv("DB_HOST"))
 		viper.SetDefault("DB_USER", os.Getenv("DB_USER"))
