@@ -93,11 +93,15 @@ func (ss *standupUpdateService) GetAllStandupUpdate(queryReq *dtos.StandupUpdate
 	queryReq.Normalize()
 
 	date, _ := time.Parse("2006-01-02", queryReq.Day)
+	weekStart, _ := time.Parse("2006-01-02", queryReq.WeekStart)
+	weekEnd, _ := time.Parse("2006-01-02", queryReq.WeekEnd)
 
 	query := models.StandupUpdateQuery{
-		Day:    date,
-		Sprint: queryReq.Sprint,
-		Owner:  queryReq.Owner,
+		Day:       date,
+		Sprint:    queryReq.Sprint,
+		Owner:     queryReq.Owner,
+		WeekStart: weekStart,
+		WeekEnd:   weekEnd,
 	}
 
 	standupUpdatesModel, err := ss.standupUpdateRepository.GetAllStandupUpdate(queryReq.Limit, queryReq.Page, query)

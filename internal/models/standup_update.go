@@ -22,7 +22,9 @@ type StandupUpdate struct {
 }
 
 type StandupUpdateQuery struct {
-	Day    time.Time
-	Sprint string
-	Owner  string
+	Day       time.Time
+	Sprint    string
+	Owner     string
+	WeekStart time.Time
+	WeekEnd   time.Time
 }

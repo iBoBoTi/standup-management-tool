@@ -38,6 +38,9 @@ func (sr *standupUpdateRepository) GetAllStandupUpdate(limit, page int, query mo
 	if !query.Day.IsZero() {
 		queryBuilder = queryBuilder.Where("check_in_time::date = ?", query.Day)
 	}
+	if !query.WeekStart.IsZero() && !query.WeekEnd.IsZero() {
+		queryBuilder = queryBuilder.Where("check_in_time::date BETWEEN ? AND ?", query.WeekStart, query.WeekEnd)
+	}
 	if query.Sprint != "" {
 		queryBuilder = queryBuilder.Where("sprint_id LIKE ?", fmt.Sprintf("%%%s%%", query.Sprint))
 	}

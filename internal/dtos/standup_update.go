@@ -35,11 +35,13 @@ func (s *StandupUpdate) Validate(v *validator.Validator) bool {
 }
 
 type StandupUpdatesQueryRequest struct {
-	Page   int    `json:"page" form:"page"`
-	Limit  int    `json:"-" form:"limit"`
-	Day    string `json:"day" form:"day"`
-	Sprint string `json:"sprint" form:"sprint"`
-	Owner  string `json:"owner" form:"owner"`
+	Page      int    `json:"page" form:"page"`
+	Limit     int    `json:"-" form:"limit"`
+	Day       string `json:"day" form:"day"`
+	Sprint    string `json:"sprint" form:"sprint"`
+	Owner     string `json:"owner" form:"owner"`
+	WeekStart string `json:"week_start" form:"week_start"`
+	WeekEnd   string `json:"week_end" form:"week_end"`
 }
 
 func (r *StandupUpdatesQueryRequest) Normalize() {
@@ -62,5 +64,24 @@ func (r *StandupUpdatesQueryRequest) Normalize() {
 		now := time.Now().UTC()
 		date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
 		r.Day = date.Format(dayLayout)
+	}
+
+	if r.WeekStart != "" {
+		_, err = time.Parse(dayLayout, r.WeekStart)
+		if err != nil {
+			prevSevenDays := time.Now().UTC().AddDate(0, 0, -7)
+			date := time.Date(prevSevenDays.Year(), prevSevenDays.Month(), prevSevenDays.Day(), 0, 0, 0, 0, time.UTC)
+			r.WeekStart = date.Format(dayLayout)
+		}
+	}
+
+	if r.WeekEnd != "" {
+		_, err = time.Parse(dayLayout, r.WeekEnd)
+		if err != nil {
+			now := time.Now().UTC()
+			date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+			r.WeekEnd = date.Format(dayLayout)
+		}
+
 	}
 }
