@@ -25,6 +25,7 @@ func main() {
 
 	cfg, err := config.Load(".")
 	if err != nil {
+		log.Println("unable to read env")
 		log.Fatal(err)
 	}
 

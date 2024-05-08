@@ -30,9 +30,9 @@ func LoadWithPath(p string, env string) (cfg Config, err error) {
 }
 
 func loader(p string, env string) (cfg Config, err error) {
-	viper.AddConfigPath(p)
-	viper.SetConfigName(env)
-	viper.SetConfigType("env")
+	// viper.AddConfigPath(p)
+	// viper.SetConfigName(env)
+	// viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
