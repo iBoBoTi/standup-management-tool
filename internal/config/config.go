@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"time"
 
 	"github.com/spf13/viper"
@@ -30,11 +31,25 @@ func LoadWithPath(p string, env string) (cfg Config, err error) {
 }
 
 func loader(p string, env string) (cfg Config, err error) {
+	environment := os.Getenv("ENVIRONMENT")
 	viper.AddConfigPath(p)
 	viper.SetConfigName(env)
 	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
+
+	if environment == "production"{
+		viper.SetDefault("ENVIRONMENT", environment)
+		viper.SetDefault("DB_HOST", os.Getenv("DB_HOST"))
+		viper.SetDefault("DB_USER", os.Getenv("DB_USER"))
+		viper.SetDefault("DB_PASSWORD", os.Getenv("DB_PASSWORD"))
+		viper.SetDefault("DB_NAME", os.Getenv("DB_NAME"))
+		viper.SetDefault("DB_PORT", os.Getenv("DB_PORT"))
+		viper.SetDefault("HTTP_SERVER_ADDRESS", os.Getenv("HTTP_SERVER_ADDRESS"))
+		viper.SetDefault("TOKEN_SYMMETRIC_KEY", os.Getenv("TOKEN_SYMMETRIC_KEY"))
+		viper.SetDefault("ACCESS_TOKEN_DURATION", os.Getenv("ACCESS_TOKEN_DURATION"))
+		viper.SetDefault("REFERESH_TOKEN_DURATION", os.Getenv("REFERESH_TOKEN_DURATION"))
+	}
 
 	err = viper.ReadInConfig()
 	if err != nil {
