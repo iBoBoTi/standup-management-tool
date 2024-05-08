@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -38,6 +39,7 @@ func loader(p string, env string) (cfg Config, err error) {
 
 	viper.AutomaticEnv()
 	viper.AllowEmptyEnv(true)
+	log.Println("environment: ",environment)
 
 	if environment == "production" {
 		viper.SetDefault("ENVIRONMENT", environment)
@@ -54,6 +56,7 @@ func loader(p string, env string) (cfg Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
+		log.Println("Error reading config")
 		return
 	}
 
