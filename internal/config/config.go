@@ -22,7 +22,7 @@ type Config struct {
 }
 
 func Load(p string) (cfg Config, err error) {
-	return loader(p, "./.env")
+	return loader(p, ".env")
 }
 
 func LoadWithPath(p string, env string) (cfg Config, err error) {
