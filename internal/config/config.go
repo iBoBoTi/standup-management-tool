@@ -36,6 +36,7 @@ func loader(p string, env string) (cfg Config, err error) {
 	viper.AddConfigPath(p)
 	viper.SetConfigName(env)
 	viper.SetConfigType("env")
+	viper.SetConfigFile(".env")
 
 	viper.AutomaticEnv()
 	viper.AllowEmptyEnv(true)
