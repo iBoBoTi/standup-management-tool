@@ -19,7 +19,6 @@ type Config struct {
 	HttpServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS"`
 	TokenSymmetricKey    string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
-	RefreshTokenDuration time.Duration `mapstructure:"REFERESH_TOKEN_DURATION"`
 	Environment          string        `mapstructure:"ENVIRONMENT"`
 }
 
@@ -44,7 +43,6 @@ func loader(p string, env string) (cfg Config, err error) {
 		viper.SetDefault("HTTP_SERVER_ADDRESS", os.Getenv("HTTP_SERVER_ADDRESS"))
 		viper.SetDefault("TOKEN_SYMMETRIC_KEY", os.Getenv("TOKEN_SYMMETRIC_KEY"))
 		viper.SetDefault("ACCESS_TOKEN_DURATION", os.Getenv("ACCESS_TOKEN_DURATION"))
-		viper.SetDefault("REFERESH_TOKEN_DURATION", os.Getenv("REFERESH_TOKEN_DURATION"))
 	} else{
 
 		viper.AddConfigPath(p)
