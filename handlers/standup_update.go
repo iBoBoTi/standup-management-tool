@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/iBoBoTi/standup-management-tool/internal/dtos"
+	appError "github.com/iBoBoTi/standup-management-tool/internal/errors"
 	"github.com/iBoBoTi/standup-management-tool/internal/validator"
 	"github.com/iBoBoTi/standup-management-tool/server"
 	"github.com/iBoBoTi/standup-management-tool/service"
@@ -66,4 +67,22 @@ func (sh *standupUpdateHandler) CreateStandupUpdate(ctx *gin.Context) {
 	}
 
 	server.SuccessJSONResponse(ctx, http.StatusCreated, "standup update created successfully", createdStandupUpdate)
+}
+
+func (sh *standupUpdateHandler) GetAllStandupUpdate(ctx *gin.Context) {
+	var req dtos.StandupUpdatesQueryRequest
+
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err)
+		return
+	}
+
+	standupUpdates, err := sh.standupUpdateService.GetAllStandupUpdate(&req)
+	if err != nil {
+		sh.srv.Logger.Error(err, nil)
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, appError.ErrInternalServer)
+		return
+	}
+
+	server.SuccessJSONResponse(ctx, http.StatusOK, "standup updates retrieved successfully", standupUpdates)
 }

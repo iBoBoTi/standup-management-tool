@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/iBoBoTi/standup-management-tool/internal/models"
 	"gorm.io/gorm"
@@ -8,7 +10,7 @@ import (
 
 type StandupUpdateRepository interface {
 	CreateStandupUpdate(standupUpdate *models.StandupUpdate) error
-	GetAllStandupUpdate(limit, page int) ([]models.StandupUpdate, error)
+	GetAllStandupUpdate(limit, page int, query models.StandupUpdateQuery) ([]models.StandupUpdate, error)
 	DoesTodayStandupForEmployeeExist(employeeID uuid.UUID) (bool, error)
 }
 
@@ -26,9 +28,22 @@ func (sr *standupUpdateRepository) CreateStandupUpdate(standupUpdate *models.Sta
 	return sr.db.Create(standupUpdate).Error
 }
 
-func (sr *standupUpdateRepository) GetAllStandupUpdate(limit, page int) ([]models.StandupUpdate, error) {
+func (sr *standupUpdateRepository) GetAllStandupUpdate(limit, page int, query models.StandupUpdateQuery) ([]models.StandupUpdate, error) {
+
+	// Construct the query
+	queryBuilder := sr.db.Model(&models.StandupUpdate{})
+	if query.Owner != "" {
+		queryBuilder = queryBuilder.Where("employee_id LIKE ?", fmt.Sprintf("%%%s%%", query.Owner))
+	}
+	if !query.Day.IsZero() {
+		queryBuilder = queryBuilder.Where("check_in_time::date = ?", query.Day)
+	}
+	if query.Sprint != "" {
+		queryBuilder = queryBuilder.Where("sprint_id LIKE ?", fmt.Sprintf("%%%s%%", query.Sprint))
+	}
+
 	var standupUpdate []models.StandupUpdate
-	if err := sr.db.Model(&models.Sprint{}).Order("created_at ASC").Scopes(models.NewPaginate(limit, page).PaginatedResult).Find(&standupUpdate).Error; err != nil {
+	if err := queryBuilder.Order("created_at ASC").Scopes(models.NewPaginate(limit, page).PaginatedResult).Find(&standupUpdate).Error; err != nil {
 		return nil, err
 	}
 	return standupUpdate, nil

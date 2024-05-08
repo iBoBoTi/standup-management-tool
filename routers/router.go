@@ -46,6 +46,7 @@ func SetupRouter(srv *server.Server) {
 
 	standupHandler := handlers.NewStandupUpdateHandler(srv, service.NewStandupUpdateService(repository.NewStandupUpdateRepository(srv.DB.GormDB), repository.NewSprintRepository(srv.DB.GormDB)))
 	v1.POST("/sprints/:id/updates", standupHandler.CreateStandupUpdate)
+	v1.GET("/updates", standupHandler.GetAllStandupUpdate)
 
 	srv.Router = router
 

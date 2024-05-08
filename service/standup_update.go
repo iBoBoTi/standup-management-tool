@@ -23,7 +23,7 @@ const (
 
 type StandupUpdateService interface {
 	CreateStandupUpdate(sprintDto *dtos.StandupUpdate) (*dtos.StandupUpdate, error)
-	GetAllStandupUpdate(paginateReq *dtos.PaginatedRequest) ([]dtos.StandupUpdate, error)
+	GetAllStandupUpdate(queryReq *dtos.StandupUpdatesQueryRequest) ([]dtos.StandupUpdate, error)
 }
 
 type standupUpdateService struct {
@@ -89,24 +89,32 @@ func (ss *standupUpdateService) CreateStandupUpdate(standupUpdateDto *dtos.Stand
 	return mappers.StandupUpdateModelMapToStandupUpdateDto(standupUpdateModel), nil
 }
 
-func (ss *standupUpdateService) GetAllStandupUpdate(paginateReq *dtos.PaginatedRequest) ([]dtos.StandupUpdate, error) {
-	// paginateReq.Normalize()
+func (ss *standupUpdateService) GetAllStandupUpdate(queryReq *dtos.StandupUpdatesQueryRequest) ([]dtos.StandupUpdate, error) {
+	queryReq.Normalize()
 
-	// sprintsModel, err := ss.standupUpdateRepository.GetAllStandupUpdate(paginateReq.Limit, paginateReq.Page)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	date, _ := time.Parse("2006-01-02", queryReq.Day)
 
-	// sprintsDto := make([]dtos.Sprint, 0)
-	// if len(sprintsModel) > 0 {
-	// 	for _, sprint := range sprintsModel {
-	// 		sprintDto := mappers.SprintModelMapToSprintDto(&sprint)
-	// 		sprintsDto = append(sprintsDto, *sprintDto)
-	// 	}
-	// }
+	query := models.StandupUpdateQuery{
+		Day:    date,
+		Sprint: queryReq.Sprint,
+		Owner:  queryReq.Owner,
+	}
 
-	// return sprintsDto, nil
-	return nil, nil
+	standupUpdatesModel, err := ss.standupUpdateRepository.GetAllStandupUpdate(queryReq.Limit, queryReq.Page, query)
+	if err != nil {
+		return nil, err
+	}
+
+	standupUpdatesDto := make([]dtos.StandupUpdate, 0)
+	if len(standupUpdatesModel) > 0 {
+		for _, update := range standupUpdatesModel {
+			updateDto := mappers.StandupUpdateModelMapToStandupUpdateDto(&update)
+			standupUpdatesDto = append(standupUpdatesDto, *updateDto)
+		}
+	}
+
+	return standupUpdatesDto, nil
+
 }
 
 func hasSprintStarted(sprintStartDate time.Time) bool {
