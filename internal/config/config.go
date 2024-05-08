@@ -33,14 +33,6 @@ func LoadWithPath(p string, env string) (cfg Config, err error) {
 
 func loader(p string, env string) (cfg Config, err error) {
 	environment := os.Getenv("ENVIRONMENT")
-	viper.AddConfigPath(p)
-	viper.SetConfigName(env)
-	viper.SetConfigType("env")
-	viper.SetConfigFile(".env")
-
-	viper.AutomaticEnv()
-	viper.AllowEmptyEnv(true)
-	log.Println("environment: ",environment)
 
 	if environment == "production" {
 		viper.SetDefault("ENVIRONMENT", environment)
@@ -53,12 +45,20 @@ func loader(p string, env string) (cfg Config, err error) {
 		viper.SetDefault("TOKEN_SYMMETRIC_KEY", os.Getenv("TOKEN_SYMMETRIC_KEY"))
 		viper.SetDefault("ACCESS_TOKEN_DURATION", os.Getenv("ACCESS_TOKEN_DURATION"))
 		viper.SetDefault("REFERESH_TOKEN_DURATION", os.Getenv("REFERESH_TOKEN_DURATION"))
-	}
+	} else{
 
-	err = viper.ReadInConfig()
-	if err != nil {
-		log.Println("Error reading config")
-		return
+		viper.AddConfigPath(p)
+		viper.SetConfigName(env)
+		viper.SetConfigType("env")
+	
+		viper.AutomaticEnv()
+
+		err = viper.ReadInConfig()
+		if err != nil {
+			log.Println("Error reading config")
+			return
+		}
+
 	}
 
 	err = viper.Unmarshal(&cfg)
